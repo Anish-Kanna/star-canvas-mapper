@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sparkles, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 
@@ -73,6 +74,7 @@ const Index = () => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [matchedConstellation, setMatchedConstellation] = useState<string | null>(null);
   const [showExample, setShowExample] = useState(false);
+  const [selectedConstellation, setSelectedConstellation] = useState<string>("Orion");
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const gridSize = 8;
   const dotSize = 12;
@@ -87,20 +89,22 @@ const Index = () => {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw example constellations
+    // Draw example constellation
     if (showExample) {
-      const colors = [
-        { stroke: "hsl(280 100% 70%)", shadow: "hsl(280 100% 60%)" }, // Purple for Orion
-        { stroke: "hsl(45 100% 65%)", shadow: "hsl(45 100% 55%)" },   // Gold for Big Dipper
-        { stroke: "hsl(320 100% 70%)", shadow: "hsl(320 100% 60%)" }, // Pink for Cassiopeia
-        { stroke: "hsl(160 100% 65%)", shadow: "hsl(160 100% 55%)" }, // Teal for Leo
-      ];
+      const colorMap: Record<string, { stroke: string; shadow: string }> = {
+        "Orion": { stroke: "hsl(280 100% 70%)", shadow: "hsl(280 100% 60%)" },
+        "Big Dipper": { stroke: "hsl(45 100% 65%)", shadow: "hsl(45 100% 55%)" },
+        "Cassiopeia": { stroke: "hsl(320 100% 70%)", shadow: "hsl(320 100% 60%)" },
+        "Leo": { stroke: "hsl(160 100% 65%)", shadow: "hsl(160 100% 55%)" },
+      };
 
-      constellations.forEach((constellation, idx) => {
-        ctx.strokeStyle = colors[idx].stroke;
+      const constellation = constellations.find(c => c.name === selectedConstellation);
+      if (constellation) {
+        const colors = colorMap[selectedConstellation];
+        ctx.strokeStyle = colors.stroke;
         ctx.lineWidth = 2;
         ctx.shadowBlur = 15;
-        ctx.shadowColor = colors[idx].shadow;
+        ctx.shadowColor = colors.shadow;
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
         ctx.setLineDash([5, 5]);
@@ -116,8 +120,8 @@ const Index = () => {
           }
         });
         ctx.stroke();
-      });
-      ctx.setLineDash([]);
+        ctx.setLineDash([]);
+      }
     }
 
     // Draw connections
@@ -162,7 +166,7 @@ const Index = () => {
 
   useEffect(() => {
     drawGrid();
-  }, [connectedPoints, showExample]);
+  }, [connectedPoints, showExample, selectedConstellation]);
 
   useEffect(() => {
     if (connectedPoints.length > 0) {
@@ -323,16 +327,31 @@ const Index = () => {
             </div>
           )}
 
-          <div className="flex gap-3">
-            <Button
-              onClick={toggleExample}
-              variant="outline"
-              size="lg"
-              className="gap-2 border-primary/50 hover:border-primary hover:bg-primary/10 transition-all"
-            >
-              <Sparkles className="w-5 h-5" />
-              {showExample ? "Hide Example" : "Show Example"}
-            </Button>
+          <div className="flex flex-col sm:flex-row gap-3 items-center">
+            <div className="flex gap-2 items-center">
+              <Select value={selectedConstellation} onValueChange={setSelectedConstellation}>
+                <SelectTrigger className="w-[180px] border-primary/50 hover:border-primary bg-background">
+                  <SelectValue placeholder="Select constellation" />
+                </SelectTrigger>
+                <SelectContent className="bg-card border-primary/30">
+                  {constellations.map((c) => (
+                    <SelectItem key={c.name} value={c.name}>
+                      {c.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              
+              <Button
+                onClick={toggleExample}
+                variant="outline"
+                size="lg"
+                className="gap-2 border-primary/50 hover:border-primary hover:bg-primary/10 transition-all"
+              >
+                <Sparkles className="w-5 h-5" />
+                {showExample ? "Hide" : "Show"}
+              </Button>
+            </div>
             
             <Button
               onClick={handleReset}
