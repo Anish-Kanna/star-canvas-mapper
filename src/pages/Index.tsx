@@ -226,8 +226,20 @@ const Index = () => {
     for (const constellation of constellations) {
       if (connectedPoints.length !== constellation.points.length) continue;
 
-      const isMatch = constellation.points.every((constellationPoint) =>
-        connectedPoints.some(
+      // Normalize both patterns to start at (0,0) for comparison
+      const normalizePattern = (points: Point[]) => {
+        if (points.length === 0) return points;
+        const minX = Math.min(...points.map(p => p.x));
+        const minY = Math.min(...points.map(p => p.y));
+        return points.map(p => ({ x: p.x - minX, y: p.y - minY }));
+      };
+
+      const normalizedConstellation = normalizePattern(constellation.points);
+      const normalizedConnected = normalizePattern(connectedPoints);
+
+      // Check if patterns match (order-independent)
+      const isMatch = normalizedConstellation.every((constellationPoint) =>
+        normalizedConnected.some(
           (connectedPoint) =>
             connectedPoint.x === constellationPoint.x &&
             connectedPoint.y === constellationPoint.y
