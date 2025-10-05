@@ -87,28 +87,36 @@ const Index = () => {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw example constellation
+    // Draw example constellations
     if (showExample) {
-      const exampleConstellation = constellations[0]; // Show Orion
-      ctx.strokeStyle = "hsl(280 100% 70%)";
-      ctx.lineWidth = 3;
-      ctx.shadowBlur = 20;
-      ctx.shadowColor = "hsl(280 100% 60%)";
-      ctx.lineCap = "round";
-      ctx.lineJoin = "round";
-      ctx.setLineDash([5, 5]);
+      const colors = [
+        { stroke: "hsl(280 100% 70%)", shadow: "hsl(280 100% 60%)" }, // Purple for Orion
+        { stroke: "hsl(45 100% 65%)", shadow: "hsl(45 100% 55%)" },   // Gold for Big Dipper
+        { stroke: "hsl(320 100% 70%)", shadow: "hsl(320 100% 60%)" }, // Pink for Cassiopeia
+        { stroke: "hsl(160 100% 65%)", shadow: "hsl(160 100% 55%)" }, // Teal for Leo
+      ];
 
-      ctx.beginPath();
-      exampleConstellation.points.forEach((point, index) => {
-        const x = point.x * spacing + spacing;
-        const y = point.y * spacing + spacing;
-        if (index === 0) {
-          ctx.moveTo(x, y);
-        } else {
-          ctx.lineTo(x, y);
-        }
+      constellations.forEach((constellation, idx) => {
+        ctx.strokeStyle = colors[idx].stroke;
+        ctx.lineWidth = 2;
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = colors[idx].shadow;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.setLineDash([5, 5]);
+
+        ctx.beginPath();
+        constellation.points.forEach((point, index) => {
+          const x = point.x * spacing + spacing;
+          const y = point.y * spacing + spacing;
+          if (index === 0) {
+            ctx.moveTo(x, y);
+          } else {
+            ctx.lineTo(x, y);
+          }
+        });
+        ctx.stroke();
       });
-      ctx.stroke();
       ctx.setLineDash([]);
     }
 
