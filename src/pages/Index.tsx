@@ -72,6 +72,7 @@ const Index = () => {
   const [connectedPoints, setConnectedPoints] = useState<Point[]>([]);
   const [isDrawing, setIsDrawing] = useState(false);
   const [matchedConstellation, setMatchedConstellation] = useState<string | null>(null);
+  const [showExample, setShowExample] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const gridSize = 8;
   const dotSize = 12;
@@ -85,6 +86,31 @@ const Index = () => {
     if (!ctx) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw example constellation
+    if (showExample) {
+      const exampleConstellation = constellations[0]; // Show Orion
+      ctx.strokeStyle = "hsl(280 100% 70%)";
+      ctx.lineWidth = 3;
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = "hsl(280 100% 60%)";
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.setLineDash([5, 5]);
+
+      ctx.beginPath();
+      exampleConstellation.points.forEach((point, index) => {
+        const x = point.x * spacing + spacing;
+        const y = point.y * spacing + spacing;
+        if (index === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+      });
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
 
     // Draw connections
     if (connectedPoints.length > 1) {
@@ -128,7 +154,7 @@ const Index = () => {
 
   useEffect(() => {
     drawGrid();
-  }, [connectedPoints]);
+  }, [connectedPoints, showExample]);
 
   useEffect(() => {
     if (connectedPoints.length > 0) {
@@ -217,6 +243,10 @@ const Index = () => {
     setIsDrawing(false);
   };
 
+  const toggleExample = () => {
+    setShowExample(!showExample);
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-8 bg-[image:var(--gradient-cosmic)]">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -273,15 +303,27 @@ const Index = () => {
             </div>
           )}
 
-          <Button
-            onClick={handleReset}
-            variant="outline"
-            size="lg"
-            className="gap-2 border-primary/50 hover:border-primary hover:bg-primary/10 transition-all"
-          >
-            <RotateCcw className="w-5 h-5" />
-            Reset
-          </Button>
+          <div className="flex gap-3">
+            <Button
+              onClick={toggleExample}
+              variant="outline"
+              size="lg"
+              className="gap-2 border-primary/50 hover:border-primary hover:bg-primary/10 transition-all"
+            >
+              <Sparkles className="w-5 h-5" />
+              {showExample ? "Hide Example" : "Show Example"}
+            </Button>
+            
+            <Button
+              onClick={handleReset}
+              variant="outline"
+              size="lg"
+              className="gap-2 border-primary/50 hover:border-primary hover:bg-primary/10 transition-all"
+            >
+              <RotateCcw className="w-5 h-5" />
+              Reset
+            </Button>
+          </div>
 
           <div className="mt-6 p-4 bg-card/60 backdrop-blur-sm rounded-lg border border-primary/20">
             <h3 className="text-lg font-semibold text-primary mb-2">Available Constellations:</h3>
