@@ -289,6 +289,38 @@ const Index = () => {
       </div>
 
       <div className="relative z-10 flex flex-col items-center gap-8">
+        {/* Side info box */}
+<div className="fixed top-1/5 right-8 w-[280px] p-6 bg-card/80 backdrop-blur-sm border-2 border-primary/20 rounded-lg z-20">
+  <h2 className="text-2xl font-bold text-primary mb-4">About This Project</h2>
+  <p className="text-muted-foreground mb-2">
+    Constellation Matcher is an interactive web tool where you can connect stars on a grid to discover famous constellations like Orion, Leo, and the Big Dipper.
+  </p>
+  <p className="text-muted-foreground mb-2">
+    Click and drag on the canvas to draw your constellation. If your pattern matches one of the constellations, you'll get a visual confirmation and a short description.
+  </p>
+  <p className="text-muted-foreground">
+    You can also toggle examples to see the correct constellation pattern, or reset the canvas to try again.
+  </p>
+</div>
+{/* Side info box */}
+<div className="fixed top-1/5 left-8 w-[280px] p-6 bg-card/80 backdrop-blur-sm border-2 border-primary/20 rounded-lg z-20">
+  <h2 className="text-2xl font-bold text-primary mb-4">Constellations and Importance</h2>
+  <p className="text-muted-foreground mb-2">
+    Constellations are useful primarily for navigation, timekeeping, and cultural purposes.
+  </p>
+  <p className="text-muted-foreground mb-2">
+    <span className="text-primary font-semibold">Navigation:</span> They serve as celestial "landmarks," helping travelers and navigators determine direction and latitude, and locate other stars and deep-sky objects.
+  </p>
+  <p className="text-muted-foreground mb-2">
+    <span className="text-primary font-semibold">Timekeeping:</span> Historically, constellations were essential for tracking seasons and creating calendar systems, aiding agrarian societies.
+  </p>
+  <p className="text-muted-foreground">
+    <span className="text-primary font-semibold">Cultural & Educational Value:</span> They embody rich mythology and history, serving as an accessible and engaging educational tool for introducing people to astronomy and the cosmos.
+  </p>
+</div>
+
+
+
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-3">
             <Sparkles className="w-8 h-8 text-primary animate-pulse" />
@@ -305,8 +337,8 @@ const Index = () => {
         <Card className="p-6 bg-card/80 backdrop-blur-sm border-2 border-primary/20">
           <canvas
             ref={canvasRef}
-            width={gridSize * spacing + spacing * 2}
-            height={gridSize * spacing + spacing * 2}
+            width={gridSize * spacing + spacing * 1}
+            height={gridSize * spacing + spacing * 1}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
